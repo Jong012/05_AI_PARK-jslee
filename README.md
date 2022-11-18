@@ -6,6 +6,12 @@
 
 ## 모델링
 
+### ERD
+
+<div align="center">
+  <img src="doc/img/ai_park.png" alt="AI-PARK ERD" width="80%" height="80%">
+</div>
+
 ### Audio
 
 - field
