@@ -26,7 +26,6 @@
 
 - field
     - id
-    - index: 텍스트의 순서를 뜻함
     - title : 프로젝트의 이름
     - update_time
     - create_time
