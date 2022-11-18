@@ -41,6 +41,18 @@
     3. 일정시간 이후 함수에서 (id, text)형태의 원소를 가진 리스트를 리턴합니다. [('id1' ,'text1'), ('id2', 'text2'), ('id3', 'text3'), ....]
     4. 오디오는 input의 path에 저장됩니다.
 
-- `GET` **/api/tts/text**: 텍스트 조회
+- `GET` **/api/tts/project/:id/index/:index**: 텍스트 조회
     - 특정 프로젝트의 n번째 페이지를 조회합니다.
     - 한페이지는 10문장으로 이루어져 있습니다.
+
+- `PUT/PATCH` **/api/tts/audio/:id**: 텍스트 수정
+    - 한 문장의 텍스트와 스피드를 수정합니다.
+
+- `GET` **/api/tts/audio/:id**: 오디오파일 송신
+    - 요청받은 오디오파일을 송신한다.
+
+- `POST` **/api/tts/audio/:id**: 텍스트(오디오) 생성 / 삭제
+    - 삽입위치는 항상 앞, 뒤가 아닌 중간도 가능
+
+- `DELETE` **/api/tts/project/:id**: 프로젝트 삭제
+
