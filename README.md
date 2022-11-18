@@ -21,9 +21,16 @@
 - field
     - id
     - index: 텍스트의 순서를 뜻함
-    - project_title : 프로젝트의 이름
+    - title : 프로젝트의 이름
     - update_time
     - create_time
+
+### FIle
+
+- field
+    - id
+    - path
+    - audio_id(fk)
 
 ## 기능 구현
 
