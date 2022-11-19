@@ -17,7 +17,7 @@ import logging
 import re
 
 
-def get_validate_sentence(sentence) -> str:
+def get_validate_sentence(sentence: str) -> str:
     """
     한글, 영어, 숫자, 물음표, 느낌표, 마침표, 따옴표, 공백를 제외한 나머지는 문장에 포함되지
     않도록 문장을 치환함
