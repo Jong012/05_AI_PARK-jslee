@@ -21,7 +21,7 @@ def get_validate_sentence(sentence) -> str:
     """
     한글, 영어, 숫자, 물음표, 느낌표, 마침표, 따옴표, 공백를 제외한 나머지는 문장에 포함되지
     않도록 문장을 치환함
-    :param sentence: 문장
+    :param sentence: 문단
     :return: 유효성 검사를 체크한 문단을 반환
     """
     pattern = r'[^\w.!?\s\'\"]'
