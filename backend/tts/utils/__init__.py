@@ -34,6 +34,7 @@ def sentence2texts(sentence: str) -> list:
     :param sentence: 문단
     :return: 한 문장씩 끊은 list 를 반환
     """
+    sentence_ = get_validate_sentence(sentence)
     sep = ['?', '.', '!']
     pattern = f'([{"".join(sep)}])'
     li = re.split(pattern, sentence_)  # 먼저 구분자를 통해 문단을 문장으로 끊음. 이때 구분자는 문장 뒤쪽에 위치하게 됨
