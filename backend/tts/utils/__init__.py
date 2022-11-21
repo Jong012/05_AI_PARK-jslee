@@ -50,7 +50,8 @@ def sentence2texts(sentence: str) -> list:
                 result[-1] = result[-1] + x  # 문장 끝에 구분자 ('?', '.', '!') 를 붙여줌
                 continue
             except IndexError as ie:
-                logging.warning(ie)  # 첫 문장이 구분자로 시작할 수도 있으므로 그냥 오류 로그만 내놓고 result 리스트에 포함시키기로 함
+                logging.warning(f'tts.utils.sentence2texts {ie}\n'
+                                f'sentence start seperator.')  # 첫 문장이 구분자로 시작할 수도 있으므로 그냥 오류 로그만 내놓고 result 리스트에 포함시키기로 함
                 pass
         result.append(x)
 
