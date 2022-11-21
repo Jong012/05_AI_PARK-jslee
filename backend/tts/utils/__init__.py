@@ -31,12 +31,12 @@ def get_validate_sentence(sentence: str) -> str:
 def sentence2texts(sentence: str) -> list:
     """
     구분자('?', '.', '!')를 통해 문단을 한 문장씩 끊는 함수 생성
-    :param sentence: 유효성 검사를 통과한 문단
+    :param sentence: 문단
     :return: 한 문장씩 끊은 list 를 반환
     """
     sep = ['?', '.', '!']
     pattern = f'([{"".join(sep)}])'
-    li = re.split(pattern, sentence)  # 먼저 구분자를 통해 문단을 문장으로 끊음. 이때 구분자는 문장 뒤쪽에 위치하게 됨
+    li = re.split(pattern, sentence_)  # 먼저 구분자를 통해 문단을 문장으로 끊음. 이때 구분자는 문장 뒤쪽에 위치하게 됨
     result = []
     # HACK: 한 문장씩 끊고 뒤에 구분자를 결합하기 위한 로직
     for idx, x in enumerate(li):
