@@ -13,8 +13,10 @@
 # 구체적으로 명세되지 않은 부분은 임의의 인풋/아웃풋을 주석으로 남긴 후 자유롭게 개발하시면 됩
 # 니다.
 import logging
-
 import re
+from typing import List, Union
+
+from gtts import gTTS
 
 
 def get_validate_sentence(sentence: str) -> str:
@@ -28,7 +30,7 @@ def get_validate_sentence(sentence: str) -> str:
     return re.sub(pattern, '', sentence)
 
 
-def sentence2texts(sentence: str) -> list:
+def sentence2texts(sentence: str) -> List[Union[int, str]]:
     """
     구분자('?', '.', '!')를 통해 문단을 한 문장씩 끊는 함수 생성
     :param sentence: 문단
@@ -37,23 +39,25 @@ def sentence2texts(sentence: str) -> list:
     sentence_ = get_validate_sentence(sentence)
     sep = ['?', '.', '!']
     pattern = f'([{"".join(sep)}])'
-    li = re.split(pattern, sentence_)  # 먼저 구분자를 통해 문단을 문장으로 끊음. 이때 구분자는 문장 뒤쪽에 위치하게 됨
-    result = []
+    split_sentence = re.split(pattern, sentence_)  # 먼저 구분자를 통해 문단을 문장으로 끊음. 이때 구분자는 문장 뒤쪽에 위치하게 됨
+    results = []
     # HACK: 한 문장씩 끊고 뒤에 구분자를 결합하기 위한 로직
-    for idx, x in enumerate(li):
+    for _, x in enumerate(split_sentence):
         if not x:  # 공백 문자 삭제
             continue
 
         x = x.strip()  # 문장 앞 뒤로 공백 제거
         if x in sep:
             try:
-                result[-1] = result[-1] + x  # 문장 끝에 구분자 ('?', '.', '!') 를 붙여줌
+                results.append(results.pop() + x)  # 문장 끝에 구분자 ('?', '.', '!') 를 붙여줌
                 continue
             except IndexError as ie:
                 # 첫 문장이 구분자로 시작할 수도 있으므로 그냥 오류 로그만 내놓고 result 리스트에 포함시키기로 함
                 logging.warning(f'tts.utils.sentence2texts {ie}\n'
                                 f'sentence start seperator.')
                 pass
-        result.append(x)
+        results.append(x)
+
+    return results
 
     return result
