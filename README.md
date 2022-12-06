@@ -68,3 +68,62 @@
 
 - `DELETE` **/api/tts/project/:id**: 프로젝트 삭제
 
+# 개발 중 나온 ISSUE
+
+## 1. 문단 전처리 과정
+
+1. 유효성 검사.
+
+    - 한글, 영어, 숫자, 물음표, 느낌표, 마침표, 따옴표, 공백를 제외한 나머지는 문장에 포함되지 않는다.
+
+      ``` python
+      import re 
+
+      def get_validate_sentence(sentence) -> str:
+          pattern = r'[^\w.!?\s\'\"]'
+          return re.sub(pattern, '', sentence)
+      ```
+
+2. 구분자를 유지하기
+
+    - 문단을 구분자(?|.|!)로 구분하여 한 문장씩으로 끊어야함
+    - 이때 구분자는 끊어진 문장에 붙여야 함
+    - 두 단계를 구분지어 로직을 수행하고자 함 첫 번째는 구분자로 `split()` 을 한다.
+
+    - split 으로 반환 된 `list` 를 순회하며 구분자를 결합 시킨다.
+
+      ```python
+      import logging
+      import re
+      
+      def sentence2texts(sentence: str) -> list:
+          sep = ['?', '.', '!']
+          pattern = f'([{"".join(sep)}])'
+          li = re.split(pattern, sentence)
+          result = []
+          for idx, x in enumerate(li):
+              if not x:  # 공백 문자 삭제
+                  continue
+   
+              x = x.strip()  # 문장 앞 뒤로 공백 제거
+              if x in sep:
+                    try:
+                        result[-1] = result[-1] + x  # 문장 끝에 구분자 ('?', '.', '!') 를 붙여줌
+                        continue
+                    except IndexError as ie:
+                        logging.warning(ie)
+                        pass
+              result.append(x)
+   
+          return result
+      ```
+
+## 2. 프로젝트 생성
+
+1. 프로젝트의 문장 처리
+    1. 프로젝트 생성 시 첫 문장을 어떻게 받을 것인가?
+        - serializer custom field 로 write -> audio 에 쓰도록 하고 read 는 audio 의 index 를 붙이는 걸로
+    2. 오디오의 순서는 어떻게 처리 할 것인가?
+        - 하나씩 다 밀어버릴 것인가?(V)
+          - 중간에 넣는 다면 그 뒤에 index 에 +1 을 다함
+    3. 프로젝트의 문장을 어떻게 보여줄 것인가?
