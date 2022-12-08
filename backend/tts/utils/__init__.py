@@ -12,11 +12,17 @@
 # RDB를 사용하고, 테이블 갯수의 제한은 없습니다.
 # 구체적으로 명세되지 않은 부분은 임의의 인풋/아웃풋을 주석으로 남긴 후 자유롭게 개발하시면 됩
 # 니다.
+import datetime
 import logging
+import os
 import re
+import uuid
+from pathlib import Path
 from typing import List, Union
 
-from gtts import gTTS
+from config.settings import MEDIA_ROOT, MEDIA_URL
+from tts.models import Audio, Project
+from tts.tasks import audio_file_save
 
 
 def get_validate_sentence(sentence: str) -> str:
@@ -60,4 +66,49 @@ def sentence2texts(sentence: str) -> List[Union[int, str]]:
 
     return results
 
-    return result
+
+def texts2audio(user_pk: int, project: Project, texts: List[str]):
+    """
+    텍스트 list 를 오디오로 바꾼다
+
+    :param user_pk: int
+    :param project: Project
+    :param texts: List[str]
+    :return:
+    """
+    print('ggg')
+    path = save_path(user_pk)
+    dir_path = Path(MEDIA_ROOT).joinpath(path)
+    url_path = f'{MEDIA_URL}{path}'
+    os.makedirs(dir_path, exist_ok=True)
+    pattern = r'[\w]'
+    for idx, text in enumerate(texts):
+        # ...? 과 같이 문자열이 없을 때는 넘겨야함
+        if re.match(pattern, text) is None:
+            continue
+        file_nm = uuid.uuid1()
+        file_path = Path(f'{dir_path}/{file_nm}.mp3')
+        file_url_path = f'{url_path}/{file_nm}.mp3'
+        audio_file_save.delay(text, str(file_path))  # TODO: Error Handling 해야함
+        audio_model_save(text, idx, file_url_path, project)
+
+
+def save_path(user_pk: int):
+    now = datetime.datetime.now()
+    return f'{now.strftime("%Y/%m/%d")}/{user_pk}'
+
+
+def audio_model_save(text: str, idx: int, url_path: str, project: Project):
+    """
+    Audio 모델 객체에 저장하기 위한 함수
+    :param text:
+    :param idx:
+    :param url_path:
+    :param project:
+    :return:
+    """
+    audio = Audio(project=project)
+    audio.text = text
+    audio.index = idx
+    audio.file = url_path
+    audio.save()
