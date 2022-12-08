@@ -68,6 +68,13 @@
 
 - `DELETE` **/api/tts/project/:id**: 프로젝트 삭제
 
+# 기능 구현
+## 1. Project 처음 만들 때
+1. 우선 프로젝트 최초 실행 시 sentence field 를 입력 받는다.
+2. 이를 전처리 하여 Audio Model 에 저장한다
+   - 이 때 `celery` 를 통해 비동기 작업을 실행
+   - file 저장 경로는 user의 아이디를 기반으로 UUID 를 생성하여 파일명을 짓는다.
+
 # 개발 중 나온 ISSUE
 
 ## 1. 문단 전처리 과정
