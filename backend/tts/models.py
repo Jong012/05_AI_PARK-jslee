@@ -29,9 +29,10 @@ class Audio(models.Model):
     index = models.IntegerField(help_text='텍스트의 순서를 뜻함')
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)
-    text = models.TextField(help_text='오디오로 변환될 텍스트')
-    speed = models.IntegerField(help_text='오디오의 스피드')
-    file = models.FileField(upload_to=user_directory_path)
+    text = models.TextField(max_length=1024, help_text='오디오로 변환될 텍스트')
+    speed = models.FloatField(help_text='오디오의 스피드', default=1.0)
+    # file = models.FileField(upload_to=user_directory_path)
+    file = models.URLField()  # S3 bucket 으로 하기 위해 url field 로 일단은 구성
     objects = Manager()
 
     def __str__(self):
